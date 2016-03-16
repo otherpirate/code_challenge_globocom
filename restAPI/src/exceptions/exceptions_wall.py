@@ -1,6 +1,7 @@
 class WallAlreadyRunning(Exception):
     pass
 
+
 class WallAlreadyAdded(Exception):
     pass
 
