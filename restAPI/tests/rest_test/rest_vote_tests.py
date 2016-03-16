@@ -1,6 +1,7 @@
 from restAPI import web_server
 import unittest
 import time
+import threading
 
 class TestVoteRest(unittest.TestCase):
     def setUp(self):
@@ -100,21 +101,34 @@ class TestVoteRest(unittest.TestCase):
         self.assertEqual(response.status_code, 201)
 
     def test_add_stress(self):
-        def vote(candidate):
-            response = self.app.post('/vote/',
-                                    data='{"wall": "june_12", "candidate": "' + candidate + '"}',
-                                    headers={'content-type': 'application/json'})
-            self.assertEqual(response.status_code, 201)
+        requests = []
+        for _ in xrange(400):
+            requests.append(add_vote_thread(self.app, "john"))
+
+        for _ in xrange(600):
+            requests.append(add_vote_thread(self.app, "other_pirate"))
+
+        for request in requests:
+            request.start()
 
         ini_time = time.time()
-        for i in xrange(40):
-            vote("john")
-
-        for i in xrange(60):
-            vote("other_pirate")
-
+        time.sleep(.99)
         end_time = time.time()
+
         self.assertLess((end_time-ini_time), 1)
+
+class add_vote_thread(threading.Thread):
+    def __init__(self, app, name):
+        threading.Thread.__init__(self)
+        self.app = app
+        self.name = name
+
+    def run(self):
+        response = self.app.post('/vote/',
+                                data='{"wall": "june_12", "candidate": "' + self.name + '"}',
+                                headers={'content-type': 'application/json'})
+        assert response.status_code == 201
+
 
 if __name__ == '__main__':
     unittest.main()
