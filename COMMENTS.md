@@ -27,7 +27,13 @@ Todas as regras de negócio, banco dados e controles estão no server side.
 
 
 #### 3) WebClient
+Pode ser hospedado em qualquer local, basta ajustar a **API_URL** em "./js/bbb_app.js".
 
+A página paredao.html é utilizada para os usuários realizarem seus votos no paredão atual, clicando em quem deve ser eliminado.
+
+Após o voto, o usuário é direcionado para a página votacao.html onde é apresentado o estado votação, para o paredão atual.
+
+As URLs para visualização de dados dos paredões, pode ser vista em resumo_por_participante.html e resumo_por_hora.html.x`
 
 #### 4) URLs
 -  **Adicionar participante**
@@ -135,7 +141,17 @@ Todas as regras de negócio, banco dados e controles estão no server side.
 
 
 #### 2) Web client
+**Fixes**
+- reCAPTCHA is not working
 
+**Interface**
+- Votação, melhorias de interface, UX e design
+- Responsividade
+- Resultados, poder navegar entre os paredões
+
+**Funcionalidades**
+- Resultados, comparar candidados/hora
+- Resultados, comparar paredões
 
 #### 3) Testes
 **REST**
