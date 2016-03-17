@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Votação por Hora</title>
+
+    <script type="text/javascript" src="./js/bbb_api.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        function search() {
+            results = result_by_hour(document.getElementById("wall").value);
+            if (!results) {
+                window.alert("Paredão não encontrado!");
+            } else {
+                google.charts.load('current', {packages: ['corechart', 'bar']});
+                google.charts.setOnLoadCallback(drawBasic);
+
+                function drawBasic() {
+                    delete results["total"];
+                    info = [["Hora", "Votos"]]
+                    for(result in results) {
+                        info.push([result, results[result]])
+                    }
+
+                    var data = google.visualization.arrayToDataTable(info);
+                    var options = {
+                        title: 'Votação',
+                        hAxis: {
+                            title: 'Votos',
+                            minValue: 0
+                        },
+                        vAxis: {
+                            title: 'Hora'
+                        }
+                    };
+
+                    var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
+                    chart.draw(data, options);
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <div>
+        Paredão:
+        <input id="wall"></input>
+        <button onclick="search()">Search</button>
+    </div>
+    <div id="chart_div"></div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Votação</title>
+
+    <script type="text/javascript" src="./js/bbb_api.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        wall = "";
+        window.onload = function(e) {
+            paredao = get_wall()
+            if (!paredao) {
+                window.alert("Nenhuma votação aberta no momento!");
+            } else {
+                wall = paredao.id;
+            }
+        }
+
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Participante');
+            data.addColumn('number', 'Votos');
+
+            results = result_by_candidate(wall);
+            delete results["total"];
+            info = []
+            for(result in results) {
+                info.push([result, results[result]])
+            }
+
+            data.addRows(info);
+
+            var options = {'title':'Acompanhe a votação', 'width':800, 'height':800};
+            var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        }
+    </script>
+</head>
+<body>
+    <div id="chart_div"></div>
+</body>
+</html>

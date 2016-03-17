@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Vote!!!</title>
+
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
+
+    <script type="text/javascript" src="./js/bbb_api.js"></script>
+    <script type="text/javascript">
+        sprite = new Image()
+        wall = "";
+        function add_candidate_picture(elem, id, candidate) {
+            var canvas = document.createElement("canvas");
+            canvasContext = canvas.getContext("2d");
+            canvas.width = 300;
+            canvas.height = 240; 
+            canvasContext.drawImage(sprite, id * 325, 200, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
+
+            canvas.className = "candidate_picture";
+            canvas.onclick = function() {
+                if (window.confirm("Eliminar " + candidate + "?")) {
+                    if (vote_add(wall, candidate)) {
+                        window.location="votacao.html";
+                    } else {
+                        window.alert("Falha ao votar, por favor tente mais tarde :(");
+                    }
+                }
+            }
+            elem.appendChild(canvas);
+        }
+
+        function add_candidate_details(elem, id, candidate) {
+            var details = document.createElement("p");
+            final_id = id+1;
+            details.innerHTML = 
+                "Para eliminar <b>" + candidate + "</b> " +
+                "pelo telefone disque <b>0800-123-00" + final_id + "</b> " + 
+                "ou mande um sms para <b>800" + final_id + "</b>";
+            details.className = "candidate_details";
+            elem.appendChild(details);
+        }
+
+        function add_candidate(id, candidate) {
+            div = document.createElement("div");
+            div.className = "candidate_group";
+
+            add_candidate_details(div, id, candidate);
+            add_candidate_picture(div, id, candidate);
+            
+            document.getElementById("participantes").appendChild(div);
+        }
+
+        window.onload = function(e) {
+            paredao = get_wall()
+            if (!paredao) {
+                window.alert("Nenhuma votação aberta no momento!");
+            } else {
+                wall = paredao.id;
+                sprite.onload = function() { 
+                    for (i=0; i<paredao.candidates.length; i++){
+                        add_candidate(i, paredao.candidates[i]);
+                    }
+                }
+                sprite.src = "./imgs/sprite.png";
+            }
+        }
+    </script>
+</head>
+<body>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+    <p>Quem você quer eliminar?</p>
+    <div id="participantes"></div>
+    <div class="g-recaptcha" data-sitekey="6LeI0xoTAAAAAN0Z6pv8hUhr42ijhiKqhFQkg-ve"></div>
+</body>
+</html>

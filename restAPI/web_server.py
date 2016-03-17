@@ -14,7 +14,12 @@ from restAPI.src.exceptions.exceptions_candidate import CandidateAlreadyAdded, C
 from restAPI.src.exceptions.exceptions_wall import WallAlreadyRunning, WallInsufficientCandidates, WallInvalidData, \
     WallDoNotExist, WallIsEnded, WallAlreadyAdded
 
-
+@app.after_request
+def after_request(response):
+  response.headers.add('Access-Control-Allow-Origin', '*')
+  response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+  response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+  return response
 
 @app.route("/candidate/", methods=["POST"])
 def candidate_add():
