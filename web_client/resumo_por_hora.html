@@ -12,9 +12,6 @@
             if (!results) {
                 window.alert("Paredão não encontrado!");
             } else {
-                google.charts.load('current', {packages: ['corechart', 'bar']});
-                google.charts.setOnLoadCallback(drawBasic);
-
                 function drawBasic() {
                     delete results["total"];
                     info = [["Hora", "Votos"]]
@@ -37,6 +34,8 @@
                     var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
                     chart.draw(data, options);
                 }
+                google.charts.load('current', {packages: ['corechart', 'bar']});
+                google.charts.setOnLoadCallback(drawBasic);
             }
         }
     </script>

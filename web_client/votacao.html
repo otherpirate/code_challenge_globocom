@@ -16,9 +16,7 @@
                 wall = paredao.id;
             }
         }
-
-        google.charts.load('current', {'packages':['corechart']});
-        google.charts.setOnLoadCallback(drawChart);
+        
         function drawChart() {
             var data = new google.visualization.DataTable();
             data.addColumn('string', 'Participante');
@@ -37,6 +35,9 @@
             var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
             chart.draw(data, options);
         }
+
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
     </script>
 </head>
 <body>
