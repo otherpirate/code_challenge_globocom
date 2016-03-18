@@ -1,9 +1,25 @@
 =====================
 ## Instalação
 
-#### 1) Banco de dados local/não instalado
+#### 1) Config
+Se necessário, o arquivo para configurar o acesso a base de dados é
 
-#### 2) Banco de dados externo/instalado
+    ./restAPI/.env
+
+#### 2) Banco de dados não instalado
+
+    sudo make install
+
+#### 3) Banco de dados já instalado
+
+    sudo make install-without-database
+
+#### 4) Testando
+
+    make test
+
+#### 5) Rodando
+    sudo make run
 
 =====================
 ## A solução
