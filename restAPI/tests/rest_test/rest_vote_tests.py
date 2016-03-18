@@ -1,11 +1,13 @@
 from restAPI import web_server
+from restAPI.src.database.database import Database
 import unittest
 import time
 import threading
+from flask import json
 
 class TestVoteRest(unittest.TestCase):
     def setUp(self):
-        web_server.app.config['TESTING'] = True
+        web_server.load_modules(Database("bbb_3000_testing"))
         web_server.app.database.clear()
         self.app = web_server.app.test_client()
 
@@ -102,32 +104,45 @@ class TestVoteRest(unittest.TestCase):
 
     def test_add_stress(self):
         requests = []
-        for _ in xrange(400):
-            requests.append(add_vote_thread(self.app, "john"))
-
-        for _ in xrange(600):
-            requests.append(add_vote_thread(self.app, "other_pirate"))
-
-        for request in requests:
+        for _ in xrange(2):
+            request = add_vote_thread(self.app, "john")
             request.start()
+            requests.append(request)
 
-        ini_time = time.time()
-        time.sleep(.99)
-        end_time = time.time()
+        for _ in xrange(3):
+            request = add_vote_thread(self.app, "other_pirate")
+            request.start()
+            requests.append(request)
 
-        self.assertLess((end_time-ini_time), 1)
+        time.sleep(1)
+        has_active = True
+        while has_active:
+            has_active = False
+            for request in requests:
+                if request.is_alive():
+                    time.sleep(0.25)
+                    has_active = True
+                    break
+                requests.remove(request)
+
+        response = self.app.get('/wall/june_12/candidate/')
+        response_data = json.loads(response.data)
+        self.assertEqual(response_data["total"], 1000)
 
 class add_vote_thread(threading.Thread):
-    def __init__(self, app, name):
+    def __init__(self, app, name, votes=200):
         threading.Thread.__init__(self)
         self.app = app
         self.name = name
+        self.votes = votes
 
     def run(self):
-        response = self.app.post('/vote/',
-                                data='{"wall": "june_12", "candidate": "' + self.name + '"}',
-                                headers={'content-type': 'application/json'})
-        assert response.status_code == 201
+        while self.votes > 0:
+            response = self.app.post('/vote/',
+                                    data='{"wall": "june_12", "candidate": "' + self.name + '"}',
+                                    headers={'content-type': 'application/json'})
+            assert response.status_code == 201
+            self.votes -= 1
 
 
 if __name__ == '__main__':

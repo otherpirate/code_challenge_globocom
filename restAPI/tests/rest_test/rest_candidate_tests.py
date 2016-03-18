@@ -1,16 +1,16 @@
 from restAPI import web_server
+from restAPI.src.database.database import Database
 import unittest
 
 
 class TestCandidateRest(unittest.TestCase):
     def setUp(self):
-        web_server.app.config['TESTING'] = True
+        web_server.load_modules(Database("bbb_3000_testing"))
         web_server.app.database.clear()
         self.app = web_server.app.test_client()
 
     def tearDown(self):
         web_server.app.config['TESTING'] = False
-
 
     def test_add_empty(self):
         response = self.app.post('/candidate/',

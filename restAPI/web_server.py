@@ -115,13 +115,11 @@ def vote_add():
     return Response(status=201)
 
 def start():
+    load_modules(Database())
     app.run(host='0.0.0.0')
 
-if app.config['TESTING']:
-    app.database = Database("testing")
-else:
-    app.database = Database()
-
-app.candidate = CandidateController(app.database)
-app.wall = WallController(app.database)
-app.vote = VoteController(app.database)
+def load_modules(database):
+    app.database = database
+    app.candidate = CandidateController(database)
+    app.wall = WallController(database)
+    app.vote = VoteController(database)

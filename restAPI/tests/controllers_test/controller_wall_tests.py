@@ -13,7 +13,7 @@ import unittest
 class TestWallController(unittest.TestCase):
 
     def setUp(self):
-        db = Database("testing")
+        db = Database("bbb_3000_testing")
         db.clear()
 
         self.walls = WallController(db)
